@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const redisClient = require('../services/redis.service');
 
 const authUser = async function (req, res, next) {
 
@@ -15,6 +15,12 @@ const authUser = async function (req, res, next) {
     
     if(!token){
         return res.status(401).json({error:'Please Authenticate'});
+    }
+
+    const isBlacklisted = await redisClient.get(token);
+
+    if(isBlacklisted){
+        return res.status(401).send({error: 'Unauthorized User'});
     }
     
     try {
