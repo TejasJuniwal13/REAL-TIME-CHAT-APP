@@ -1,10 +1,17 @@
-export default {
-  plugins: [
-    // Note: For ESM, use 'import' or dynamic import if needed,
-    // but PostCSS config often allows require here as well.
-    // To be fully ESM, you can do this:
+// // postcss.config.js
+// export default {
+//   plugins: {
+//     '@tailwindcss/postcss': {},
+//     autoprefixer: {},
+//   }
+// }
 
-    (await import('@tailwindcss/postcss')).default,
-    (await import('autoprefixer')).default,
-  ]
+
+
+// postcss.config.js
+module.exports = {
+  plugins: {
+    '@tailwindcss/postcss': {},
+    autoprefixer: {},
+  },
 }
