@@ -3,7 +3,23 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from '../config/axios.js'
 
 const Login = () => {
-    
+    const [email,setEmail] = useState('');
+    const [password,setPassword] = useState('');
+
+    const navigate = useNavigate();
+
+
+   async function submitHandler(event){
+    event.preventDefault();
+       try {
+            const response = await axios.post('/user/login', {email,password});
+            console.log(response.data);
+            navigate('/')
+        } catch (error) {
+            console.log(error);
+        }
+       
+}
 
 
   return (
@@ -11,13 +27,13 @@ const Login = () => {
             <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-white mb-6">Login</h2>
                 <form
-                    // onSubmit={submitHandler}
+                    onSubmit={submitHandler}
                 >
                     <div className="mb-4">
                         <label className="block text-gray-400 mb-2" htmlFor="email">Email</label>
                         <input
-
-                            // onChange={(e) => setEmail(e.target.value)}
+                            
+                            onChange={(e)=> setEmail(e.target.value)}
                             type="email"
                             id="email"
                             className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -27,7 +43,7 @@ const Login = () => {
                     <div className="mb-6">
                         <label className="block text-gray-400 mb-2" htmlFor="password">Password</label>
                         <input
-                            // onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e)=> setPassword(e.target.value)}
                             type="password"
                             id="password"
                             className="w-full p-3 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
