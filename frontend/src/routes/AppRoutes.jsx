@@ -7,13 +7,11 @@ import Home from '../screens/Home'
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-
-
-    <Routes>
-        <Route path='/' element={<Home/>}></Route>
-        <Route path='/register' element={<Register/>}></Route>
-        <Route path='login'v element={<Login/>}></Route>
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/register" element={<Register />}></Route>
+        <Route path="login" v element={<Login />}></Route>
+      </Routes>
     </BrowserRouter>
   )
 }
