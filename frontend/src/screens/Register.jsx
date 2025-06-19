@@ -16,6 +16,7 @@ const Register = () => {
             
             const response = await axios.post('/user/register', {email,password});
             console.log(response.data);        
+            navigate('/')
         } catch (error) {
             console.log(error);
         }
