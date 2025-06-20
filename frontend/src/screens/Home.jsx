@@ -5,9 +5,13 @@ const Home = () => {
   const { user } = useContext(UserContext)
 
   return (
-    <h1 class="text-3xl font-bold underline text-sky-700 hover:text-sky-500">
-      Welcome Home {JSON.stringify(user)}
-    </h1>
+    <main className='p-4'>
+      <div className="projects">
+        <button className="project p-4 border border-slate-300 rounded -md">
+          <i className="ri-link"></i>
+        </button>
+      </div>
+    </main>
   )
 }
 
