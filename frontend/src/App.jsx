@@ -2,14 +2,12 @@ import React from 'react'
 import AppRoutes from './routes/AppRoutes'
 import { UserProvider } from './context/user.context'
 
-const App = ()=>{
+const App = () => {
   return (
     <UserProvider>
-      <AppRoutes/>
+      <AppRoutes />
     </UserProvider>
-    
   )
 }
-
 
 export default App

@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { UserContext } from '../context/user.context'
-import { useContext } from 'react'
-
 
 const Home = () => {
+  const { user } = useContext(UserContext)
 
-    const {user} = useContext(UserContext);
-    
   return (
-    <div>Welcome Home {JSON.stringify(user)}</div>
+    <h1 class="text-3xl font-bold underline text-sky-700 hover:text-sky-500">
+      Welcome Home {JSON.stringify(user)}
+    </h1>
   )
 }
 
