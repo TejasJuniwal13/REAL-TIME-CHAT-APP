@@ -35,6 +35,21 @@ const createProject = async ({name,userId})=>{
 
 }
 
-const projectService = {createProject}
+
+const getAllProjectByUserId = async ({userId})=>{
+    if(!userId){
+        throw new Error('UserId is required');
+    }
+
+
+    const allUserProjects = await projectModel.find({
+        users : userId
+    })
+
+    return allUserProjects
+
+}
+
+const projectService = {createProject, getAllProjectByUserId}
 
 module.exports = projectService;    
