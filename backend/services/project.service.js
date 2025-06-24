@@ -50,6 +50,23 @@ const getAllProjectByUserId = async ({userId})=>{
 
 }
 
+
+const addUserToProject = async({projectId,users})=>{
+
+    if(!projectId){
+        throw new Error('projectId is required');
+    }
+
+    if(!users){
+        throw new Error('users is requried');
+    }
+
+    
+
+
+}
+
+
 const projectService = {createProject, getAllProjectByUserId}
 
 module.exports = projectService;    

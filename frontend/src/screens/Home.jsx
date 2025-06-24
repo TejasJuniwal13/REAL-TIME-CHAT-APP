@@ -1,14 +1,26 @@
 import React, { useContext, useState } from 'react'
 import { UserContext } from '../context/user.context'
+import axios from 'axios';
 
 const Home = () => {
   const { user } = useContext(UserContext)
   const [isModalOpen, setisModalOpen] = useState(false);
-  
+  const [projectName, setprojectName] = useState([]);
 
-  function createProject(e) {
+
+  async function createProject(e) {
     e.preventDefault();
     console.log('Project created');
+
+    try {
+      const response = await axios.post('/projects/create', {name : projectName})
+      console.log(response);
+      setIsModalOpen(false);
+
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   return (
@@ -30,7 +42,8 @@ const Home = () => {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Project Name</label>
                 <input
-                  
+                  onChange={(e) => { setprojectName(e.target.value) }}
+                  value={projectName}
                   type="text" className="mt-1 block w-full p-2 border border-gray-300 rounded-md" required />
               </div>
               <div className="flex justify-end">
