@@ -18,6 +18,16 @@ const createUser = async({email,password})=>{
 }
 
 
-const userService = {createUser};
+const getAllUsers = async ({userId})=>{
+    const users = await userModel.find({
+        _id : {$ne : userId}
+    });
+
+    return users;
+}
+
+
+
+const userService = {createUser,getAllUsers};
 
 module.exports = {userService};
