@@ -2,6 +2,7 @@ const userModel = require('../models/user.model');
 const {userService} = require('../services/user.service');
 const {validationResult} = require('express-validator');
 const redisClient = require('../services/redis.service');
+const projectService = require('../services/project.service');
 
 const createUserController = async(req,res)=>{
     const errors = validationResult(req);
@@ -94,7 +95,29 @@ const logoutController = async (req,res)=>{
 }
 
 
+const getAllUsersController = async(req,res)=>{
 
-const userController = {createUserController , loginController , profileController , logoutController};
+    try {     
+
+        const loggedInUser = await userModel.findOne({
+            email : req.user.email
+        })
+
+        const allUsers = await userService.getAllUsers({userId : loggedInUser._id})
+
+        res.status(200).json({user : allUsers})
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({error:err.message})
+    }
+
+
+}
+
+
+
+const userController = {createUserController , loginController , profileController , logoutController , getAllUsersController};
 
 module.exports = {userController}
