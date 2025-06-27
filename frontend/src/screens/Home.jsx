@@ -1,37 +1,77 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../context/user.context'
+import axiosInstance from '../config/axios.js';
 import axios from 'axios';
 
 const Home = () => {
   const { user } = useContext(UserContext)
   const [isModalOpen, setisModalOpen] = useState(false);
   const [projectName, setprojectName] = useState([]);
+  const [project,setProject] = useState([]);
 
 
-  async function createProject(e) {
+function createProject(e) {
     e.preventDefault();
-    console.log('Project created');
+     console.log({ projectName })
 
-    try {
-      const response = await axios.post('/projects/create', {name : projectName})
-      console.log(response);
-      setIsModalOpen(false);
-
-    } catch (error) {
-      console.log(error);
-    }
+    axiosInstance.post('/projects/create', {
+            name: projectName,
+        })
+            .then((res) => {
+                console.log(res)
+                setIsModalOpen(false)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
 
   }
 
+
+  useEffect(()=>{
+    const fetchProject = async ()=>{
+      try {
+        const res = await axiosInstance.get('/projects/all');
+        console.log(res.data.projects);
+        setProject(res.data.projects);
+        
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchProject();
+
+  },[])
+
+
   return (
     <main className='p-4'>
-      <div className="projects">
+      <div className="projects flex flex-wrap gap-3">
         <button
 
           onClick={() => setisModalOpen(true)}
           className="project p-4 border border-slate-300 rounded -md">
           <i className="ri-link ml-2">New Project</i>
         </button>
+
+{
+  project.map((prjt)=>(
+    <div key={prjt._id} className="project flex flex-col gap-2 cursor-pointer p-4 border border-slate-300 rounded-md min-w-52 hover:bg-slate-200">
+      <h2 className='font-semibold'>{prjt.name}</h2>      
+      <div className='flex gap-1'>
+        <p><small><i className="ri-user-line p-2 font"></i> Collaborator :</small>
+        </p>
+        {prjt.users.length}
+      </div>
+
+    </div>
+  ))
+}
+
+
+
+
       </div>
 
       {isModalOpen && (
