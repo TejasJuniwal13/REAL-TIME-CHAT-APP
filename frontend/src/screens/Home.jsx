@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '../context/user.context'
 import axiosInstance from '../config/axios.js';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 const Home = () => {
   const { user } = useContext(UserContext)
@@ -9,6 +11,7 @@ const Home = () => {
   const [projectName, setprojectName] = useState([]);
   const [project,setProject] = useState([]);
 
+  const navigate = useNavigate();
 
 function createProject(e) {
     e.preventDefault();
@@ -57,7 +60,12 @@ function createProject(e) {
 
 {
   project.map((prjt)=>(
-    <div key={prjt._id} className="project flex flex-col gap-2 cursor-pointer p-4 border border-slate-300 rounded-md min-w-52 hover:bg-slate-200">
+
+    <div onClick={()=>{navigate('/project',{
+
+      state:{project}
+      
+    })}} key={prjt._id} id={prjt._id} className="project flex flex-col gap-2 cursor-pointer p-4 border border-slate-300 rounded-md min-w-52 hover:bg-slate-200">
       <h2 className='font-semibold'>{prjt.name}</h2>      
       <div className='flex gap-1'>
         <p><small><i className="ri-user-line p-2 font"></i> Collaborator :</small>
@@ -68,9 +76,6 @@ function createProject(e) {
     </div>
   ))
 }
-
-
-
 
       </div>
 
