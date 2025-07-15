@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const projectRoutes = require('./routes/project.routes');
 const app = express();
+const aiRoutes = require('./routes/ai.routes');
 
 connectDB();
 
@@ -22,6 +23,7 @@ app.use(cookieParser());
 //routes
 app.use('/user', userRoutes);
 app.use('/projects', projectRoutes);
+app.use('/ai', aiRoutes);
 app.get('/',(req,res)=>{
     res.send('WELCOME TO APP')
 })

@@ -2,13 +2,19 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import axiosInstance from '../config/axios.js';
+import { initializeSocket , recieveMessage , sendMessgae } from '../config/socket.js';
+import { useContext } from 'react';
+import {UserContext} from '../context/user.context.jsx'
 
 
 const Project = () => {
 
+    const {user} = useContext(UserContext);
+    console.log('user context is ',useContext(UserContext));
+
     const { state } = useLocation();
     const project = state?.projects;
-    console.log('We are in project ', project)
+    // console.log('We are in project ', project)
 
 
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
@@ -16,6 +22,8 @@ const Project = () => {
     const [selectedUserId, setSelectUserId] = useState([]);
     const [users, setUsers] = useState([]);
     const [projectUsers, setProjectUsers] = useState([])
+    const [message, setMessage] = useState('')
+    const messageBox = React.createRef();
 
 
 
@@ -27,7 +35,7 @@ const Project = () => {
             } else {
                 newSelectUserId.add(id);
             }
-            console.log(Array(newSelectUserId))
+            // console.log(Array(newSelectUserId))
             return newSelectUserId
         })
     }
@@ -39,7 +47,7 @@ const Project = () => {
             projectId: project._id,
             users: Array.from(selectedUserId)
         }).then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
             setIsModalOpen(false);
         }).catch((err) => {
             console.log(err);
@@ -47,14 +55,33 @@ const Project = () => {
 
     }
 
+    const send = ()=> {
+
+        
+
+        sendMessgae('project-message', {
+            message,
+            sender : user
+        })
+
+        appendOutgoingMessage(message);
+
+        setMessage("")
+    }
 
 
     useEffect(() => {
 
+        initializeSocket(project._id);
+
+        recieveMessage('project-message', data=>{
+            console.log(data);
+            appendIncomingMessage(data);
+        })
 
         axiosInstance.get(`/projects/get-project/${project._id}`).then((res) => {
-            console.log('data of users');
-            console.log(res.data.project.users);
+            // console.log('data of users');
+            // console.log(res.data.project.users);
             const user = res.data.project.users
             setProjectUsers(user);
         }).catch((err) => {
@@ -68,7 +95,7 @@ const Project = () => {
             const response = await axiosInstance.get('/user/all')
 
             try {
-                console.log(response);
+                // console.log(response);
                 setUsers(response.data.user)
             } catch (error) {
                 console.log(error);
@@ -80,6 +107,41 @@ const Project = () => {
 
     }, [])
 
+
+    function appendIncomingMessage(messageObject){
+
+        const messageBox = document.querySelector('.message-box');
+        
+        const message = document.createElement('div');
+        message.classList.add('message' ,'max-w-56' ,'flex' ,'flex-col' ,'p-2' ,'bg-slate-50' ,'w-fit' ,'rounded-md' )
+        message.innerHTML = `
+        <small class='opacity-65 text-xs'>${messageObject.sender.email}</small>
+        <p class='text-sm'>${messageObject.message}</p>
+        `
+
+        messageBox.appendChild(message);
+        scrollToBottom();
+    }
+
+
+    function appendOutgoingMessage (message){
+            const messageBox = document.querySelector('.message-box');
+
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('ml-auto', 'm-1', 'message', 'max-w-56', 'flex', 'flex-col', 'p-2', 'bg-slate-50', 'w-fit', 'rounded-md');
+            newMessage.innerHTML = `
+                <small class='opacity-65 text-xs'>${user.email}</small>
+                <p class='text-sm'>${message}</p>
+            `
+
+            messageBox.appendChild(newMessage);
+            scrollToBottom();
+    }
+
+
+    function scrollToBottom(){
+        messageBox.current.scrollTop = messageBox.current.scrollHeight 
+    }
 
 
     return (
@@ -103,28 +165,27 @@ const Project = () => {
 
 
                 {/* conversation area  */}
-                <div className="conversation-area flex-grow flex flex-col ">
+                <div className="conversation-area flex-grow flex flex-col overflow-auto ">
 
 
                     {/* message boxes of users */}
-                    <div className="message-box flex-grow flex flex-col gap-1 ">
+                    <div
+                    ref={messageBox}
+                    className="message-box flex-grow flex flex-col gap-1 overflow-auto ">
 
-                        <div className=" m-1 message max-w-56 flex flex-col p-2 bg-slate-50 w-fit rounded-md">
-                            <small className='opacity-65 text-xs'>example@gmail.com</small>
-                            <p className='text-sm' >Lorem50</p>
-                        </div>
-
-                        <div className="ml-auto m-1 message max-w-56 flex flex-col p-2 bg-slate-50 w-fit rounded-md">
-                            <small className='opacity-65 text-xs'>example@gmail.com</small>
-                            <p className='text-sm' >Lorem50</p>
-                        </div>
+                       
 
                     </div>
 
                     {/* input field  */}
                     <div className="input-field w-full flex">
-                        <input type="text" placeholder='Enter message' className='bg-white p-2 flex-grow ' />
-                        <button className=' px-5 bg-slate-950 text-white'>
+                        <input
+                        value={message}
+                        onChange={(e)=>setMessage(e.target.value)}
+                         type="text" placeholder='Enter message' className='bg-white p-2 flex-grow ' />
+                        <button
+                        onClick={send}
+                        className=' px-5 bg-slate-950 text-white'>
                             <i className="ri-send-plane-fill"></i>
                         </button>
                     </div>

@@ -14,3 +14,8 @@ body{
   width: 100%;
 
 } */
+
+
+.message-box{
+  scroll-behavior: smooth;
+}
